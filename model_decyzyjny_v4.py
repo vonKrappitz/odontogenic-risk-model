@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Model v3. Poprawki po recenzji 10.
+Model v3.
 RÓWNANIA (wszystkie jawne):
   P(E|P1) = 1 - exp(-lambda*T)                          zdarzenie, retencja, model wykladniczy w czasie
   P(E|P2) = P(E|P1)*(1 - r_sel)                          selektywna ekstrakcja usuwa udzial r_sel
