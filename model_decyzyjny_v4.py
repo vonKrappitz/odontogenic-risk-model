@@ -1,16 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Model v3. Poprawki po recenzji 10.
-- Cztery KONKURUJACE polityki interwencji przedlotowej, P1 retencja, P2 selektywna ekstrakcja,
-  P3 tooth-preserving comprehensive sanation, P4 full dental clearance.
-- Autonomia pokladowa c jest PARAMETREM (0..1), nie polityka.
-- Rozklady trojkatne = elicited uncertainty distributions for probabilistic sensitivity analysis.
-- Jawne rownania zaleznosci (ponizej).
-- Raport WIELKOSCI EFEKTU, srednia EH, przedzial 5-95, dEH vs best, oczekiwany zal (regret), optimality share.
-- Rozdzielone dwa kryteria, min sredniej (mapa) kontra optimality share (wykres warstwowy).
-- Odpornosc na logarytmiczny rozklad lambda.
-- Figury po angielsku, dyskretna legenda, os misji rocznej ucieta do 365 dni.
-
 RÓWNANIA (wszystkie jawne):
   P(E|P1) = 1 - exp(-lambda*T)                          zdarzenie, retencja, model wykladniczy w czasie
   P(E|P2) = P(E|P1)*(1 - r_sel)                          selektywna ekstrakcja usuwa udzial r_sel
