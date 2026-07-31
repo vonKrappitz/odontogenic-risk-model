@@ -10,16 +10,6 @@ spaceflight and locates, under wide uncertainty, the isolation threshold at
 which the harm-minimising policy shifts. This repository reproduces every
 number and figure in the paper from scratch.
 
-> **A note on the file names.** This study was written and developed in Polish,
-> and the source files keep their original Polish names as a record of that.
-> The table below maps every file to its English meaning and to the figure or
-> output it produces, so the code is fully navigable without Polish. All
-> figure axes, titles and legends in the generated output are in English.
-
-<!-- After archiving a release on Zenodo, paste the badge and DOI here: -->
-<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX) -->
-**Archived version DOI:** _to be inserted from Zenodo after release._
-
 ## Policies
 
 | | Policy | Meaning |
