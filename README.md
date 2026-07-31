@@ -64,7 +64,7 @@ acceptance) and the archived code release:
 
 ```
 Kasperek, M. M. Pre-flight odontogenic-risk decision model (version 1.0.0)
-[software]. Zenodo. https://doi.org/10.5281/zenodo.XXXXXXX
+[software]. Zenodo. https://doi.org/10.5281/zenodo.21728789
 ```
 
 ## License
