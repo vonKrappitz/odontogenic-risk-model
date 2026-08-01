@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Model v3.
+Model v3. Poprawki po recenzji 10.
+- Cztery KONKURUJACE polityki interwencji przedlotowej, P1 retencja, P2 selektywna ekstrakcja,
+  P3 tooth-preserving comprehensive sanation, P4 full dental clearance.
+- Autonomia pokladowa c jest PARAMETREM (0..1), nie polityka.
+- Rozklady trojkatne = elicited uncertainty distributions for probabilistic sensitivity analysis.
+- Jawne rownania zaleznosci (ponizej).
+- Raport WIELKOSCI EFEKTU, srednia EH, przedzial 5-95, dEH vs best, oczekiwany zal (regret), optimality share.
+- Rozdzielone dwa kryteria, min sredniej (mapa) kontra optimality share (wykres warstwowy).
+- Odpornosc na logarytmiczny rozklad lambda.
+- Figury po angielsku, dyskretna legenda, os misji rocznej ucieta do 365 dni.
+
 RÓWNANIA (wszystkie jawne):
   P(E|P1) = 1 - exp(-lambda*T)                          zdarzenie, retencja, model wykladniczy w czasie
   P(E|P2) = P(E|P1)*(1 - r_sel)                          selektywna ekstrakcja usuwa udzial r_sel
@@ -77,25 +87,65 @@ effect("Mars, no rescue, low capability (c=0.2, t=400 d, n=6, T=2.6 yr)",0.2,400
 print("\n--- ODPORNOSC, Mars z logarytmicznym rozkladem lambda ---")
 effect("Mars, log-uniform lambda",0.2,400,6,2.6,lam_log=True)
 
-# ---------- TAU sensitivity (Mars) ----------
-print("\n=== WRAZLIWOSC TAU, Mars, share ===")
-for tauv in [7,30,90]:
-    p=sample(100000,0); p["tau"]=np.full(100000,float(tauv))
-    EHs=np.stack([EH(s,p,0.2,400,6,2.6) for s in range(4)]); w=EHs.argmin(0)
-    print("  tau=%2d: "%tauv+" ".join("%s=%4.1f%%"%(POL[i],np.mean(w==i)*100) for i in range(4)))
+# ---------- FIG 4, mapa min sredniej, dyskretna legenda, os roczna ucieta ----------
+GREY=["0.93","0.72","0.50","0.20"]
+def tmap(n,T,tmax,N=6000,grid=60,seed=3):
+    cs=np.linspace(0,1,grid); ts=np.linspace(0,tmax,grid); M=np.zeros((grid,grid),int)
+    p=sample(N,seed)
+    for i,c in enumerate(cs):
+        for j,t in enumerate(ts):
+            M[i,j]=int(np.argmin([EH(s,p,c,t,n,T).mean() for s in range(NP)]))
+    return ts,cs,M
+from matplotlib.colors import ListedColormap,BoundaryNorm
+cmap=ListedColormap(GREY); norm=BoundaryNorm([-.5,.5,1.5,2.5,3.5],cmap.N)
+fig,axes=plt.subplots(1,3,figsize=(15,4.7))
+panels=[(6,2.6,500,"Crew 6, 2.6-year mission"),(4,2.6,500,"Crew 4, 2.6-year mission"),(6,1.0,365,"Crew 6, 1-year mission")]
+for ax,(n,T,tmax,tt) in zip(axes,panels):
+    ts,cs,M=tmap(n,T,tmax); ax.pcolormesh(ts,cs,M,cmap=cmap,norm=norm,shading="auto")
+    ax.set_xlabel("Time to definitive care (days)"); ax.set_ylabel("Onboard capability c (0 to 1)")
+    ax.set_title(tt,fontsize=10); ax.set_xlim(0,tmax)
+    if T>2:
+        ax.plot(400,0.2,"o",ms=9,mfc="none",mec="white",mew=1.8)
+        ax.annotate("Mars",(400,0.2),color="white",fontsize=8,ha="center",xytext=(400,0.27))
+    print(f"  Fig4 [{tt}] policies:",[POL[k] for k in sorted(set(M.flatten()))])
+axes[-1].legend(handles=[Patch(facecolor=GREY[i],edgecolor="black",label=NAME[POL[i]]) for i in range(NP)],
+                loc="center left",bbox_to_anchor=(1.02,0.5),frameon=False,fontsize=8.5)
+fig.suptitle("Lowest-mean-expected-harm policy across the decision space",fontsize=12)
+fig.text(0.5,-0.02,"Grid 60 x 60. Cell colour is the policy with the lowest MEAN expected mission harm (not optimality share).",ha="center",fontsize=8)
+fig.savefig("figura_mapa_progowa.png",dpi=170,bbox_inches="tight")
 
-# ---------- EVPPI (Mars, single-loop stratified) ----------
-def evppi(c=0.2,t=400,n=6,T=2.6,N=120000,K=40,seed=7):
-    p=sample(N,seed); p["tau"]=np.full(N,30.0)
-    EHs=np.stack([EH(s,p,c,t,n,T) for s in range(4)]); base=EHs.mean(1).min(); out={}
-    for k in RANGES:
-        x=p[k]; order=np.argsort(x); bs=N//K; inner=0.0
-        for b in range(K):
-            idx=order[b*bs:(b+1)*bs] if b<K-1 else order[b*bs:]
-            inner+=EHs[:,idx].mean(1).min()*len(idx)
-        out[k]=base-inner/N
-    return out
-print("\n=== EVPPI (mission-impact units), 5 najwyzszych ===")
-for k,v in sorted(evppi().items(),key=lambda x:-x[1])[:5]:
-    print("  %-10s %.4f"%(k,v))
-print("\nUWAGA: figury generuja osobne skrypty (figura_*.py). Ten plik liczy tylko liczby.")
+# ---------- FIG 5, optimality share, oczyszczony ----------
+ts=np.linspace(0,600,25); p=sample(9000,5)
+share=np.zeros((len(ts),NP))
+for j,t in enumerate(ts):
+    w=np.argmin(np.stack([EH(s,p,0.25,t,6,2.6) for s in range(NP)]),0)
+    share[j]=[np.mean(w==s) for s in range(NP)]
+fig,ax=plt.subplots(figsize=(9,4.9)); bottom=np.zeros(len(ts))
+for s in range(NP):
+    ax.fill_between(ts,bottom,bottom+share[:,s],facecolor=GREY[s],edgecolor="white",linewidth=0.3,label=NAME[POL[s]]); bottom+=share[:,s]
+for xr,lab in [(30,"30 d"),(180,"180 d")]:
+    ax.axvline(xr,color="0.4",ls=":",lw=0.9); ax.annotate(lab,(xr,0.5),fontsize=8,ha="center",color="0.25",rotation=90,va="center")
+ax.annotate("P4 < 1%",(520,0.985),fontsize=8,color="0.2",ha="center",
+            arrowprops=dict(arrowstyle="->",color="0.4",lw=0.8),xytext=(520,0.9))
+ax.set_xlim(0,600); ax.set_ylim(0,1)
+ax.set_xlabel("Time to definitive care (days)")
+ax.set_ylabel("Share of uncertainty draws in which policy is optimal")
+ax.set_title("Optimality share across uncertainty draws as time to definitive care increases",fontsize=10)
+ax.legend(loc="center left",bbox_to_anchor=(1.01,0.5),frameon=False,fontsize=9)
+fig.tight_layout()
+fig.savefig("figura_przejscie_optimum.png",dpi=170,bbox_inches="tight")
+print("\nZapisano figury 4 i 5 (v3, P1-P4, dyskretna legenda).")
+
+# ---------- KONTROLA, pelne mozliwosci ziemskie (przywolana w Sekcji 6) ----------
+# Model ogranicza k_cap do 0.85, co odpowiada tranzytowi i wczesnej bazie.
+# Ta kontrola zdejmuje ograniczenie: c=1 i k_cap=1 oznaczaja centrum medyczne
+# zdolne wykonac to samo co klinika na Ziemi. P(F|E) spada wtedy do zera.
+print("\n=== KONTROLA, capability equivalent to terrestrial care ===")
+_q = sample(100000, 0)
+_q["k_cap"] = np.ones(100000)
+print("  P(F|E) przy c=1, k_cap=1: %.6f" % pF(0, _q, 1.0, 400).mean())
+for _T in [2.6, 10.0, 20.0]:
+    _E = np.stack([EH(s, _q, 1.0, 400, 6, _T) for s in range(4)])
+    _m = _E.mean(1)
+    print("  T=%4.1f lat: " % _T + " ".join("%s=%.3f" % (POL[i], _m[i]) for i in range(4))
+          + "  -> %s" % POL[int(_m.argmin())])
