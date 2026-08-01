@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Figura 5. Optimality share across uncertainty draws vs time to definitive care.
+"""Figura 5. Przejscie oprimum vs czas
 Cztery polityki P1-P4, autonomia c=0.25, zaloga 6, misja 2.6 roku. Zrodlo, model_decyzyjny_v4.py."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")
