@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Figura urwana miarka. Czas trwania misji a okno rozwoju prochnicy.
+Figura 2. Urwana miarka, czas trwania misji wobec okna rozwoju prochnicy.
 Pokazuje, ze ISS konczy sie zanim okno prochnicy sie zaczyna, a Mars w nie wchodzi.
-Skala szarosci. Tworzy figura_urwana_miarka.png oraz .pdf.
+Tworzy figura_urwana_miarka.png oraz .pdf.
 """
 import matplotlib
 matplotlib.use("Agg")

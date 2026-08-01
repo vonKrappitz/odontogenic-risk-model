@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Figura 5. Przejscie oprimum vs czas
-Cztery polityki P1-P4, autonomia c=0.25, zaloga 6, misja 2.6 roku. Zrodlo, model_decyzyjny_v4.py."""
+"""Figura 5. Udzial optymalnosci w losowaniach niepewnosci wobec czasu do leczenia definitywnego.
+Cztery polityki P1-P4, autonomia c=0.25, zaloga 6 osob, misja 2.6 roku.
+Importuje model_decyzyjny_v4.py. Tworzy figura_przejscie_optimum.png oraz .pdf."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42

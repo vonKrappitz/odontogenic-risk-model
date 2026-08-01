@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Figura 3 v2. Struktura decyzyjna, cztery polityki P1-P4, autonomia c jako parametr."""
+"""Figura 3. Struktura decyzyjna czterech polityk przedlotowych P1-P4.
+Autonomia pokladowa c wchodzi jako parametr, nie jako polityka.
+Tworzy figura_drzewo_decyzyjne.png oraz .pdf."""
 import matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42

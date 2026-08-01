@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Ryzyko populacyjne zdarzenia stomatologicznego w misji.
+Figura 1. Ryzyko populacyjne zdarzenia stomatologicznego w misji.
 Wzor. P(co najmniej jedno) = 1 - (1 - p)^n
 p, ryzyko powaznego zdarzenia na osobe w czasie misji.
 n, liczba osob w zalodze lub bazie.
 Zalozenia. Zdarzenia niezalezne i jednakowe p dla kazdej osoby. To uproszczenie.
-Tworzy ryzyko_populacyjne.png oraz .pdf w skali szarosci i wypisuje progi.
+Tworzy ryzyko_populacyjne.png oraz .pdf i wypisuje progi.
 """
 import numpy as np
 import matplotlib
@@ -14,7 +14,6 @@ matplotlib.rcParams['pdf.fonttype']=42
 matplotlib.rcParams['ps.fonttype']=42
 import matplotlib.pyplot as plt
 
-# globalny dostep do fig, ax zgodnie z regula projektu
 fig = None
 ax = None
 

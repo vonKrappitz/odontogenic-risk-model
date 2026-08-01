@@ -10,11 +10,22 @@ spaceflight and locates, under wide uncertainty, the isolation threshold at
 which the harm-minimising policy shifts. This repository reproduces every
 number and figure in the paper from scratch.
 
+> **A note on the file names.** This study was written and developed in Polish,
+> and the source files keep their original Polish names as a record of that.
+> The table below maps every file to its English meaning and to the figure or
+> output it produces, so the code is fully navigable without Polish. All
+> figure axes, titles and legends in the generated output are in English.
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21728788.svg)](https://doi.org/10.5281/zenodo.21728788)
 
-**Archived version DOI:** https://doi.org/10.5281/zenodo.21728789 (version 1.0.0)  
-**Concept DOI (always resolves to the latest version):** https://doi.org/10.5281/zenodo.21728788
+**Archived on Zenodo:** https://doi.org/10.5281/zenodo.21728788
+
+Version 1.0.2 is the release accompanying the manuscript and is final; later
+versions, if any, would be corrections only.
+
+This is the concept DOI. It always resolves to the latest archived release, so it
+does not need updating when a new version is deposited. Zenodo lists the DOI of
+each individual version on that page.
 
 ## Policies
 
@@ -69,8 +80,8 @@ If you use this code, please cite the paper (full reference to be added on
 acceptance) and the archived code release:
 
 ```
-Kasperek, M. M. Pre-flight odontogenic-risk decision model (version 1.0.0)
-[software]. Zenodo. https://doi.org/10.5281/zenodo.21728789
+Kasperek, M. M. Pre-flight odontogenic-risk decision model [software].
+Zenodo. https://doi.org/10.5281/zenodo.21728788
 ```
 
 ## License
