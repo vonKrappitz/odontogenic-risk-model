@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Model decyzyjny Monte Carlo dla polityk ograniczania ryzyka odontogennego przed lotem.
+Model decyzyjny Monte Carlo. Porownuje sposoby ograniczania ryzyka zebopochodnego przed lotem.
 Kod towarzyszacy pracy "Pre-flight elimination of odontogenic risk in missions
 without evacuation: a threshold hypothesis and decision-analysis framework".
 
-Cztery rozlaczne polityki przedlotowe. Autonomia pokladowa c jest PARAMETREM, nie polityka.
+Cztery rozlaczne postepowania przedlotowe. Autonomia pokladowa c jest PARAMETREM, nie postepowaniem.
   P1 retencja, P2 selektywna ekstrakcja, P3 tooth-preserving comprehensive sanation,
   P4 full dental clearance.
 
-Zakresy trojkatne podane przez autora, do probabilistycznej analizy wrazliwosci.
-Nie sa to rozklady estymowane empirycznie ani priory bayesowskie.
+Zakresy trojkatne przyjete przez autora, na potrzeby analizy wrazliwosci.
+Nie sa to rozklady oszacowane z danych ani priory bayesowskie.
 
 ROWNANIA (wszystkie jawne):
   P(E|P1) = 1 - exp(-lambda*T)                 ciezkie zdarzenie, retencja, hazard wykladniczy
@@ -22,11 +22,12 @@ ROWNANIA (wszystkie jawne):
   L(E,F) = 1.0*(1 + 2/n)                       strata przy niepowodzeniu, wieksza w malej zalodze
   EH(P)  = n*[P(E)*P(F)*L(E,F) + P(E)*(1-P(F))*L_S] + n*Cperson(P) + Cfixed(P)
 
-Uruchomienie wypisuje wszystkie raportowane liczby. Udzialy optymalnosci w scenariuszach,
-wielkosci efektu z Tabeli 4, kontrole odpornosci z rozkladem log-uniform, wrazliwosc na tau,
-wartosci EVPPI oraz kontrole przy pelnych mozliwosciach ziemskich.
+Uruchomienie wypisuje wszystkie liczby podane w pracy. Jak czesto kazde postepowanie wypada
+najlepiej w poszczegolnych scenariuszach, wielkosci efektu z Tabeli 4, sprawdzenie odpornosci
+przy rozkladzie logarytmicznym, wrazliwosc na tau, wartosci EVPPI oraz sprawdzenie przy pelnych
+mozliwosciach leczenia jak na Ziemi.
 
-NIE generuje figur. Robia to osobne skrypty figura_*.py oraz ryzyko_populacyjne.py.
+Nie rysuje figur. Robia to osobne skrypty figura_*.py oraz ryzyko_populacyjne.py.
 """
 import numpy as np
 

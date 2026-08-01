@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Figura 5. Rola optymalizacji w szacowaniu niepewności a czas do podjęcia leczenia docelowego.
-Cztery polityki P1-P4, autonomia c=0.25, zaloga 6 osob, misja 2.6 roku.
+"""Figura 5. Jak czesto kazde postepowanie wypada najlepiej, w zaleznosci od czasu oczekiwania
+na leczenie docelowe. Cztery postepowania P1-P4, autonomia c=0.25, zaloga 6 osob, misja 2.6 roku.
 Importuje model_decyzyjny_v4.py. Tworzy figura_przejscie_optimum.png oraz .pdf."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Figura 3. Struktura decyzyjna czterech polityk przedlotowych P1-P4.
-Autonomia pokladowa c wchodzi jako parametr, nie jako polityka.
+"""Figura 3. Jak przebiega wybor miedzy czterema postepowaniami przedlotowymi P1-P4.
+Autonomia pokladowa c wchodzi jako parametr, nie jako osobne postepowanie.
 Tworzy figura_drzewo_decyzyjne.png oraz .pdf."""
 import matplotlib
 matplotlib.use("Agg")

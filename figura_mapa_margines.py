@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Figura 4. Mapa marginesu decyzji, roznica sredniej oczekiwanej szkody sanacja minus retencja.
-Gradient, pogrubiona linia progu, opisane izolinie, etykiety regionow.
+"""Figura 4. O ile i w ktora strone przechyla sie wybor miedzy sanacja a retencja.
+Gradient, pogrubiona linia progu, opisane warstwice, etykiety obszarow.
 Importuje model_decyzyjny_v4.py. Tworzy figura_mapa_progowa.png oraz .pdf."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")
