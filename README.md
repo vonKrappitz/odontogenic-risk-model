@@ -10,12 +10,6 @@ spaceflight and locates, under wide uncertainty, the isolation threshold at
 which the harm-minimising policy shifts. This repository reproduces every
 number and figure in the paper from scratch.
 
-> **A note on the file names.** This study was written and developed in Polish,
-> and the source files keep their original Polish names as a record of that.
-> The table below maps every file to its English meaning and to the figure or
-> output it produces, so the code is fully navigable without Polish. All
-> figure axes, titles and legends in the generated output are in English.
-
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21728788.svg)](https://doi.org/10.5281/zenodo.21728788)
 
 **Archived on Zenodo:** https://doi.org/10.5281/zenodo.21728788
@@ -70,9 +64,12 @@ python3 figura_przejscie_optimum.py
 ```
 
 All random seeds are fixed in the code, so results are deterministic. The
-uncertain quantities are drawn from elicited triangular distributions used for
+uncertain quantities are drawn from author-specified triangular ranges used for
 probabilistic sensitivity analysis (Table 3 in the paper), not empirical
-estimates. Code comments are in Polish; this README is the English guide to them.
+estimates.
+
+Code comments are in Polish; this README is the English guide to them. All
+generated figures are in English.
 
 ## How to cite
 
