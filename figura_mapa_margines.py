@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Figura 4. O ile i w ktora strone przechyla sie wybor miedzy sanacja a retencja.
-Gradient, pogrubiona linia progu, opisane warstwice, etykiety obszarow.
-Importuje model_decyzyjny_v4.py. Tworzy figura_mapa_progowa.png oraz .pdf."""
+"""Figure 4. By how much and in which direction the choice tilts between sanation and retention.
+Gradient, a bold threshold line, labelled contours, region labels.
+Imports model_decyzyjny_v4.py. Writes figura_mapa_progowa.png and .pdf."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42
@@ -15,11 +15,11 @@ sample=ns["sample"]; EH=ns["EH"]
 def margin_grid(n,T,tmax,N=9000,grid=120,seed=3):
     cs=np.linspace(0,1,grid); ts=np.linspace(0,tmax,grid)
     p=sample(N,seed)
-    D=np.zeros((grid,grid))          # meanEH(P1 retencja) - meanEH(P3 sanacja)
+    D=np.zeros((grid,grid))          # meanEH(P1 retention) - meanEH(P3 sanation)
     for i,c in enumerate(cs):
         for j,t in enumerate(ts):
             eh_p1=EH(0,p,c,t,n,T).mean(); eh_p3=EH(2,p,c,t,n,T).mean()
-            D[i,j]=eh_p1-eh_p3           # >0 sanacja lepsza, <0 retencja lepsza
+            D[i,j]=eh_p1-eh_p3           # >0 sanation better, <0 retention better
     return ts,cs,D
 
 panels=[(6,2.6,500,"Crew 6, 2.6-year mission",(400,0.2,"Mars")),
@@ -28,20 +28,20 @@ panels=[(6,2.6,500,"Crew 6, 2.6-year mission",(400,0.2,"Mars")),
 grids=[margin_grid(n,T,tmax) for n,T,tmax,_,_ in panels]
 vmax=max(np.abs(D).max() for _,_,D in grids)
 norm=TwoSlopeNorm(vmin=-vmax,vcenter=0,vmax=vmax)
-cmap=plt.cm.RdBu_r   # niebieski = retencja, czerwony/pomaranczowy = sanacja
+cmap=plt.cm.RdBu_r   # blue = retention, red/orange = sanation
 
 fig,axes=plt.subplots(1,3,figsize=(7.48,3.1))
 for ax,(n,T,tmax,title,marker),(ts,cs,D) in zip(axes,panels,grids):
     im=ax.pcolormesh(ts,cs,D,cmap=cmap,norm=norm,shading="gouraud")
-    # linia progu, tam gdzie margines = 0
+    # threshold line, where the margin is 0
     CS=ax.contour(ts,cs,D,levels=[0.0],colors="black",linewidths=2.0)
-    # cienkie izolinie marginesu dla czytelnosci
+    # thin margin contours for readability
     CS2=ax.contour(ts,cs,D,levels=[-0.09,-0.05,-0.02,0.02,0.05],colors="0.3",linewidths=0.5,alpha=0.75)
     ax.clabel(CS2,inline=True,fontsize=5.5,fmt="%.2f")
     ax.set_xlabel("Time to definitive care (days)",fontsize=8); ax.set_ylabel("Onboard capability c",fontsize=8)
     ax.tick_params(labelsize=7)
     ax.set_title(title,fontsize=8); ax.set_xlim(0,tmax); ax.set_ylim(0,1)
-    # etykiety regionow, gdzie sie mieszcza
+    # region labels, where they fit
     if D.max()>0.02:
         ax.text(0.72*tmax,0.12,"Sanation\nfavoured",ha="center",va="center",fontsize=7,color="0.15",
                 bbox=dict(boxstyle="round,pad=0.2",fc="white",ec="0.6",alpha=0.85))

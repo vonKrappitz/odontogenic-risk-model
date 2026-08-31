@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Figura 3. Jak przebiega wybor miedzy czterema postepowaniami przedlotowymi P1-P4.
-Autonomia pokladowa c wchodzi jako parametr, nie jako osobne postepowanie.
-Tworzy figura_drzewo_decyzyjne.png oraz .pdf."""
+"""Figure 3. How the choice runs between the four pre-flight policies P1-P4.
+Onboard capability c enters as a parameter, not as a separate policy.
+Writes figura_drzewo_decyzyjne.png and .pdf."""
 import matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42
@@ -38,7 +38,7 @@ def rysuj():
     T.append(ax.text(4.15,0.45,"extreme isolation\nand low P4 cost",fontsize=7.4,color="0.2",ha="center",va="center",zorder=5,bbox=dict(boxstyle="round,pad=0.15",fc="white",ec="none")))
     T.append(link(ax,7.9,1.2,8.55,1.7,"low risk",8.12,1.55))
     T.append(link(ax,7.9,0.8,8.55,0.6,"high risk",8.12,0.62))
-    T.append(ax.text(6.9,-1.35,"extreme arm of the pre-flight-intervention axis,\noptimal only if the whole-life cost of edentulism is roughly halved",
+    T.append(ax.text(6.9,-1.35,"extreme arm of the pre-flight-intervention axis,\noptimal only if the whole-life cost of edentulism is more than halved",
         ha="center",va="center",fontsize=7.4,color="0.3",style="italic",zorder=5))
     ax.set_xlim(-0.1,11.1); ax.set_ylim(-1.8,5.2); ax.axis("off")
     fig.tight_layout()

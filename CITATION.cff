@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it using these metadata.
+title: Pre-flight odontogenic-risk decision model
+abstract: >-
+  Decision-analytic Monte Carlo model comparing four pre-flight dental policies
+  for missions without evacuation, from retention to full clearance. Locates the
+  isolation threshold at which the harm-minimising policy shifts, and reports a
+  structural sensitivity analysis over the assumptions that drive the decision.
+type: software
+version: 1.0.4
+date-released: '2026-08-31'
+license: Apache-2.0
+repository-code: https://github.com/vonKrappitz/odontogenic-risk-model
+doi: 10.5281/zenodo.21728788
+authors:
+  - family-names: Kasperek
+    given-names: Maciej M.
+    orcid: https://orcid.org/0009-0008-7419-0851
+keywords:
+  - decision analysis
+  - Monte Carlo simulation
+  - probabilistic risk assessment
+  - human spaceflight
+  - odontogenic risk

@@ -1,2 +1,4 @@
+# Tested with Python 3.12.3, numpy 2.4.4, matplotlib 3.10.8.
+# Every number reported in the paper reproduces in that environment.
 numpy
 matplotlib

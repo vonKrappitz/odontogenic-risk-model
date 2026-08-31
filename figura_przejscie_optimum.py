@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Figura 5. Jak czesto kazde postepowanie wypada najlepiej, w zaleznosci od czasu oczekiwania
-na leczenie docelowe. Cztery postepowania P1-P4, autonomia c=0.25, zaloga 6 osob, misja 2.6 roku.
-Importuje model_decyzyjny_v4.py. Tworzy figura_przejscie_optimum.png oraz .pdf."""
+"""Figure 5. How often each policy is optimal, as a function of the wait for definitive care.
+Four policies P1-P4, capability c=0.25, crew of 6, mission of 2.6 years.
+Imports model_decyzyjny_v4.py. Writes figura_przejscie_optimum.png and .pdf."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42

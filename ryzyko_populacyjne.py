@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Figura 1. Ryzyko populacyjne zdarzenia stomatologicznego w misji.
-Wzor. P(co najmniej jedno) = 1 - (1 - p)^n
-p, ryzyko powaznego zdarzenia na osobe w czasie misji.
-n, liczba osob w zalodze lub bazie.
-Zalozenia. Zdarzenia niezalezne i jednakowe p dla kazdej osoby. To uproszczenie.
-Tworzy ryzyko_populacyjne.png oraz .pdf i wypisuje progi.
+Figure 1. Population risk of a dental event during a mission.
+Formula. P(at least one) = 1 - (1 - p)^n
+p, the risk of a severe event per person over the mission.
+n, the number of people in the crew or base.
+Assumptions. Events independent and p equal for every person. This is a simplification.
+Writes ryzyko_populacyjne.png and .pdf and prints the thresholds.
 """
 import numpy as np
 import matplotlib
@@ -21,13 +21,13 @@ def P_co_najmniej_jeden(p, n):
     return 1.0 - (1.0 - p) ** n
 
 def n_do_progu(p, cel):
-    # najmniejsze n takie ze P >= cel, wzor n = ln(1-cel)/ln(1-p)
+    # smallest n such that P >= target, n = ln(1-target)/ln(1-p)
     import math
     return math.ceil(math.log(1.0 - cel) / math.log(1.0 - p))
 
 def rysuj():
     global fig, ax
-    poziomy = [0.01, 0.05, 0.10, 0.20]           # ryzyko na osobe
+    poziomy = [0.01, 0.05, 0.10, 0.20]           # risk per person
     style = ["-", "--", "-.", ":"]
     grubosc = [1.6, 1.6, 1.8, 2.0]
     n = np.arange(1, 101)
@@ -39,7 +39,7 @@ def rysuj():
         ax.plot(n, y, color="black", linestyle=s, linewidth=g,
                 label=f"per-person risk p = {int(p*100)}%")
 
-    # linie odniesienia 50, 90, 99 procent
+    # reference lines at 50, 90 and 99 percent
     for prog in [50, 90, 99]:
         ax.axhline(prog, color="0.6", linestyle=(0, (1, 3)), linewidth=0.8)
         ax.text(1.5, prog + 0.8, f"{prog}%", color="0.4", fontsize=8, va="bottom")
