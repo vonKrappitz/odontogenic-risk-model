@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Figure 2. The truncated ruler, mission duration against the window in which caries develops.
+Figure S2 (supplementary material). The truncated ruler, mission duration against the window in which caries develops.
 Shows that an ISS increment ends before the window opens, while a Mars mission enters it.
 Writes figura_urwana_miarka.png and .pdf.
 """
@@ -8,6 +8,7 @@ import matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42
 matplotlib.rcParams['ps.fonttype']=42
+matplotlib.rcParams['font.family']='DejaVu Sans'   # bundled with matplotlib, so the layout does not depend on the machine
 import matplotlib.pyplot as plt
 
 fig = None
@@ -41,7 +42,7 @@ def rysuj():
     ax.set_yticklabels([m[0] for m in misje], fontsize=9)
     ax.set_xlabel("Time since launch (years)")
     ax.set_xlim(0, 6.6)
-    ax.set_ylim(-0.6, 3.4)
+    ax.set_ylim(-0.6, 3.9)   # room for the two-line window label
     ax.set_axisbelow(True)
     ax.grid(True, axis="x", color="0.9", linewidth=0.6)
 

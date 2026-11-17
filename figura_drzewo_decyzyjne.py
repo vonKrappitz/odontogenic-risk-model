@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Figure 3. How the choice runs between the four pre-flight policies P1-P4.
+"""Figure 1. How the choice runs between the four pre-flight policies P1-P4.
 Onboard capability c enters as a parameter, not as a separate policy.
 Writes figura_drzewo_decyzyjne.png and .pdf."""
 import matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42
 matplotlib.rcParams['ps.fonttype']=42
+matplotlib.rcParams['font.family']='DejaVu Sans'   # bundled with matplotlib, so the layout does not depend on the machine
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch
 
@@ -29,15 +30,15 @@ def rysuj():
     T.append(box(ax,7.7,3.5,2.7,0.6,"crew dental risk\nprofile -> P1 or P3","0.88"))
     T.append(box(ax,9.72,1.75,2.25,0.6,"P3  Tooth-preserving\ncomprehensive sanation","0.50"))
     T.append(box(ax,9.72,0.55,2.25,0.6,"P2  Selective\nextraction","0.72"))
-    T.append(box(ax,6.9,-0.7,2.6,0.66,"P4  enters the candidate set\nfor formal evaluation","0.20",bold=True))
+    T.append(box(ax,6.9,-0.7,3.2,0.66,"P4  enters the candidate set\nfor formal evaluation","0.20",bold=True))
     T.append(link(ax,2.6,3.25,3.85,4.45,"yes",3.05,3.98))
     T.append(link(ax,2.6,2.8,3.45,2.15,"no",3.0,2.35))
     T.append(link(ax,5.6,2.3,6.4,3.4,"high c",5.95,3.0))
-    T.append(link(ax,5.4,1.75,5.8,1.2,"low c",5.55,1.5))
+    T.append(link(ax,5.4,1.75,5.8,1.2,"low c",5.2,1.42))
     ax.annotate("",xy=(5.6,-0.6),xytext=(4.5,1.61),arrowprops=dict(arrowstyle="-",color="0.35",lw=1.1,linestyle=(0,(4,3))),zorder=1)
     T.append(ax.text(4.15,0.45,"extreme isolation\nand low P4 cost",fontsize=7.4,color="0.2",ha="center",va="center",zorder=5,bbox=dict(boxstyle="round,pad=0.15",fc="white",ec="none")))
-    T.append(link(ax,7.9,1.2,8.55,1.7,"low risk",8.12,1.55))
-    T.append(link(ax,7.9,0.8,8.55,0.6,"high risk",8.12,0.62))
+    T.append(link(ax,7.9,1.2,8.55,1.7,"low risk",8.1,1.74))
+    T.append(link(ax,7.9,0.8,8.55,0.6,"high risk",8.1,0.36))
     T.append(ax.text(6.9,-1.35,"extreme arm of the pre-flight-intervention axis,\noptimal only if the whole-life cost of edentulism is more than halved",
         ha="center",va="center",fontsize=7.4,color="0.3",style="italic",zorder=5))
     ax.set_xlim(-0.1,11.1); ax.set_ylim(-1.8,5.2); ax.axis("off")

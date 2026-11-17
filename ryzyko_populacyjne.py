@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Figure 1. Population risk of a dental event during a mission.
+Figure S1 (supplementary material). Population risk of a dental event during a mission.
 Formula. P(at least one) = 1 - (1 - p)^n
 p, the risk of a severe event per person over the mission.
 n, the number of people in the crew or base.
@@ -12,6 +12,7 @@ import matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42
 matplotlib.rcParams['ps.fonttype']=42
+matplotlib.rcParams['font.family']='DejaVu Sans'   # bundled with matplotlib, so the layout does not depend on the machine
 import matplotlib.pyplot as plt
 
 fig = None
@@ -42,7 +43,11 @@ def rysuj():
     # reference lines at 50, 90 and 99 percent
     for prog in [50, 90, 99]:
         ax.axhline(prog, color="0.6", linestyle=(0, (1, 3)), linewidth=0.8)
-        ax.text(1.5, prog + 0.8, f"{prog}%", color="0.4", fontsize=8, va="bottom")
+        # 50 and 90 sit at the right end, clear of the curves; 99 stays left, above the frame
+        if prog == 99:
+            ax.text(1.5, prog + 0.8, f"{prog}%", color="0.4", fontsize=8, va="bottom")
+        else:
+            ax.text(99, prog + 0.8, f"{prog}%", color="0.4", fontsize=8, va="bottom", ha="right")
 
     ax.set_xlim(1, 100)
     ax.set_ylim(0, 100)

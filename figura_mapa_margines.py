@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Figure 4. By how much and in which direction the choice tilts between sanation and retention.
+"""Figure 2. By how much and in which direction the choice tilts between sanation and retention.
 Gradient, a bold threshold line, labelled contours, region labels.
 Imports model_decyzyjny_v4.py. Writes figura_mapa_progowa.png and .pdf."""
 import numpy as np, matplotlib
 matplotlib.use("Agg")
 matplotlib.rcParams['pdf.fonttype']=42
 matplotlib.rcParams['ps.fonttype']=42
+matplotlib.rcParams['font.family']='DejaVu Sans'   # bundled with matplotlib, so the layout does not depend on the machine
 import matplotlib.pyplot as plt
 from matplotlib.colors import TwoSlopeNorm
 src=open("model_decyzyjny_v4.py").read().split("def validate")[0]
@@ -30,7 +31,7 @@ vmax=max(np.abs(D).max() for _,_,D in grids)
 norm=TwoSlopeNorm(vmin=-vmax,vcenter=0,vmax=vmax)
 cmap=plt.cm.RdBu_r   # blue = retention, red/orange = sanation
 
-fig,axes=plt.subplots(1,3,figsize=(7.48,3.1))
+fig,axes=plt.subplots(1,3,figsize=(7.48,3.1),sharey=True,constrained_layout=True)
 for ax,(n,T,tmax,title,marker),(ts,cs,D) in zip(axes,panels,grids):
     im=ax.pcolormesh(ts,cs,D,cmap=cmap,norm=norm,shading="gouraud")
     # threshold line, where the margin is 0
@@ -38,7 +39,8 @@ for ax,(n,T,tmax,title,marker),(ts,cs,D) in zip(axes,panels,grids):
     # thin margin contours for readability
     CS2=ax.contour(ts,cs,D,levels=[-0.09,-0.05,-0.02,0.02,0.05],colors="0.3",linewidths=0.5,alpha=0.75)
     ax.clabel(CS2,inline=True,fontsize=5.5,fmt="%.2f")
-    ax.set_xlabel("Time to definitive care (days)",fontsize=8); ax.set_ylabel("Onboard capability c",fontsize=8)
+    ax.set_xlabel("Time to definitive care (days)",fontsize=8)
+    if ax is axes[0]: ax.set_ylabel("Onboard capability c",fontsize=8)   # shared axis, labelled once
     ax.tick_params(labelsize=7)
     ax.set_title(title,fontsize=8); ax.set_xlim(0,tmax); ax.set_ylim(0,1)
     # region labels, where they fit

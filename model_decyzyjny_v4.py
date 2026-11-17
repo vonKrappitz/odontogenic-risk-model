@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
 """
+Version 1.0.5. Relative to 1.0.4 this adds ONE printed sub-block, SS7, at the very end:
+the Mars scenario with the event rate fixed at values published by NASA, the rate at
+which sanation overtakes retention, and the result and the value of information under
+event-rate ranges bracketed by those published values, and a pre-positioned surface facility
+with a time to definitive care of 270 days, and minor incidents (exposed pulp) counted outside the
+event rate, with a share escalating later to an abscess, and the residual hazard after clearance
+set to zero. Every line printed by 1.0.4 is unchanged. In the paper the residual hazard after clearance
+(lam_pros, pf_pros) is no longer called prosthetic, because denture problems are minor incidents whose
+burden sits in the clearance costs. Printed labels that say prosthetic are kept so that the lines
+printed by 1.0.4 stay byte for byte the same.
 Version 1.0.4. Relative to 1.0.3 this adds ONE printed block, STRUCTURAL SENSITIVITY,
 with six sub-blocks (regret intervals, harm-scale weight sweeps, Weibull hazard,
 prosthetic multiplier, correlated crew events, provisional acceptability term).
@@ -20,7 +30,7 @@ EQUATIONS (all explicit):
   P(E|P1) = 1 - exp(-lambda*T)                 severe event, retention, exponential hazard
   P(E|P2) = P(E|P1)*(1 - r_sel)                selective extraction
   P(E|P3) = P(E|P1)*(1 - r_comp)               tooth-preserving sanation
-  P(E|P4) = 1 - exp(-lam_pros*T)               residual prosthetic hazard after clearance
+  P(E|P4) = 1 - exp(-lam_pros*T)               residual severe-event hazard after clearance
   rescue(t) = t/(t + tau)                      rises towards 1, tau is the half-saturation time
   P(F|E,P1..P3) = clip(pf0*(1 - c*k_cap)*rescue(t), 0, 1)
   P(F|E,P4)     = clip(pf_pros*rescue(t), 0, 1)
@@ -137,7 +147,7 @@ print("  Monte Carlo standard error at share 0.52, N=100000: %.3f pp"
       % (np.sqrt(0.52 * 0.48 / 100000) * 100))
 
 # ---------- EXTREME CORNER, quoted in Section 6 ----------
-# Corner of the Fig. 4 domain: zero capability, 500 days to care, crew of 6, mission of 2.6 years.
+# Corner of the Fig. 2 domain: zero capability, 500 days to care, crew of 6, mission of 2.6 years.
 # Cp_P4 FIXED at successive values, all remaining uncertainty retained.
 print("\n=== EXTREME CORNER, c=0, t=500 d, n=6, T=2.6 yr ===")
 _C, _T500, _N6, _TT = 0.0, 500, 6, 2.6
@@ -250,7 +260,7 @@ for _both,_lab in [(True,"k on dental AND prosthetic hazard (reported)"),(False,
         print("    k=%.1f  P(E|P1)=%.3f  %s" % (_k,_pEw(0,_p,_MT2,_k,_both).mean(),_summ(_E)[2]))
 print("  alternative calibration (same cumulative hazard at T=2.6 yr) would make k irrelevant by construction, because the base model uses only P(E|T), not event timing.")
 
-# --- SS4 prosthetic microgravity multiplier m on lam_pros and pf_pros ---
+# --- SS4 microgravity multiplier m on lam_pros and pf_pros, the residual hazard after clearance ---
 print("\n--- SS4 PROSTHETIC MICROGRAVITY MULTIPLIER m, Mars ---")
 for _mm in [1,2,4,8]:
     _p=sample(100000,0); _p["lam_pros"]=_p["lam_pros"]*_mm; _p["pf_pros"]=np.clip(_p["pf_pros"]*_mm,0,1)
@@ -295,3 +305,80 @@ _lo,_hi=0.0,3.0
 for _ in range(30):
     _mid=(_lo+_hi)/2; _m=_acc(0,1.0,_mid).mean(1); _lo,_hi=(_mid,_hi) if _m[2]<_m[0] else (_lo,_mid)
 print("    L_replace at which sanation stops beating retention: %.3f MIU per replacement" % _lo)
+
+# --- SS7 event rate fixed at published values, and the rate at which the leader changes (added in 1.0.5) ---
+# Sources of the fixed values: Gilkey et al., NASA/TP-2012-217120 (submarine prior, in-flight posterior,
+# pre-flight astronaut count 19 abscesses in 475.2 person-years, in-flight record 0 in 31.9 person-years);
+# Menon, NASA/TM-2012-217368 (Integrated Medical Model incidences for abscess and exposed pulp).
+print("\n--- SS7 EVENT RATE FIXED AT PUBLISHED VALUES, Mars ---")
+_p7=sample(100000,0)
+def _fix(lam):
+    q=dict(_p7); q["lambda_yr"]=np.full(100000,lam)
+    return np.stack([EH(s,q,_MC,_MT,_MN,_MT2) for s in range(NP)])
+_UB=-np.log(0.05)/31.9
+for _lam,_lab in [(0.00353,"submarine prior"),(0.00816,"NASA in-flight posterior mean"),(0.0114,"NASA in-flight posterior 95th percentile"),
+                  (0.0230,"IMM abscess"),(19/475.2,"astronauts pre-flight, 19 in 475.2 person-years"),
+                  (0.0230+0.0201,"IMM abscess plus exposed pulp"),(_UB,"95% upper bound, 0 events in 31.9 person-years")]:
+    _E=_fix(_lam); _sh=np.array([(_E.argmin(0)==s).mean() for s in range(NP)])*100
+    print("    lambda=%.5f  %s   share P1 %4.1f%% P3 %4.1f%%   %s" % (_lam,_summ(_E)[2],_sh[0],_sh[2],_lab))
+_lo,_hi=0.001,0.10
+for _ in range(40):
+    _mid=(_lo+_hi)/2; _m=_fix(_mid).mean(1); _lo,_hi=(_mid,_hi) if _m[2]>_m[0] else (_lo,_mid)
+_thr=(_lo+_hi)/2
+print("    lambda at which sanation overtakes retention at the Mars point: %.4f per person-year" % _thr)
+_a,_c3,_b=RANGES["lambda_yr"]
+print("    probability mass above that rate: triangular range %.1f%%, log-uniform range %.1f%%" % (
+      (_b-_thr)**2/((_b-_a)*(_b-_c3))*100, np.log(_b/_thr)/np.log(_b/_a)*100))
+# Event rate drawn log-uniformly over a range bracketed by published figures instead of the author's range.
+# The summary uses the scenario draws (seed 0); the value of information uses the draws of the EVPPI run
+# (seed 7, 120000 draws, tau fixed at 30 days, 40 bins on lambda), so the first line reproduces the EVPPI block above.
+def _evppi_lam(p,K=40):
+    E=np.stack([EH(s,p,_MC,_MT,_MN,_MT2) for s in range(NP)]); o=np.argsort(p["lambda_yr"])
+    return E.mean(1).min()-E[:,o].reshape(NP,K,-1).mean(2).min(0).mean(), E.mean(1).min()
+_pe=sample(120000,7); _pe["tau"]=np.full(120000,30.0); _v,_b0=_evppi_lam(_pe)   # tau fixed at 30 days, as in the EVPPI block
+print("    value of information on lambda, author range: %.4f MIU, %.1f%% of the best mean harm" % (_v,_v/_b0*100))
+for _l,_h,_lab in [(0.00353,_UB,"submarine prior to flight-record bound"),(0.00816,_UB,"NASA in-flight posterior mean to flight-record bound")]:
+    _r=np.random.default_rng(105)
+    _q=dict(_p7); _q["lambda_yr"]=np.exp(_r.uniform(np.log(_l),np.log(_h),100000))
+    _E=np.stack([EH(s,_q,_MC,_MT,_MN,_MT2) for s in range(NP)]); _sh=np.array([(_E.argmin(0)==s).mean() for s in range(NP)])*100
+    print("    log-uniform %.5f to %.5f  %s   share P1 %4.1f%% P3 %4.1f%%   mass above %.4f: %.1f%%   %s" % (
+          _l,_h,_summ(_E)[2],_sh[0],_sh[2],_thr,np.log(_h/_thr)/np.log(_h/_l)*100,_lab))
+    _r=np.random.default_rng(105)
+    _qe=dict(_pe); _qe["lambda_yr"]=np.exp(_r.uniform(np.log(_l),np.log(_h),120000))
+    _v,_b1=_evppi_lam(_qe)
+    print("        value of information on lambda: %.4f MIU, %.1f%% of the best mean harm" % (_v,_v/_b1*100))
+# Pre-positioned surface facility (added in 1.0.5 after the event-rate rows). Time to definitive care 270 days,
+# about a minimum-energy Earth-Mars transfer (about 259 days) with margin. Crew, capability and parameter draws
+# as at the Mars point. The second row counts exposure without care only on two 270-day transits; events treated
+# at the surface are counted as harmless. The last line is the exposure at which sanation overtakes retention.
+print("    pre-positioned surface facility, time to definitive care 270 days:")
+for _T,_lab in [(_MT2,"exposure as at the Mars point"),(540/365.25,"without care only on two 270-day transits")]:
+    _E=np.stack([EH(s,_p7,_MC,270.0,_MN,_T) for s in range(NP)]); _sh=np.array([(_E.argmin(0)==s).mean() for s in range(NP)])*100
+    print("    T=%.2f yr  %s   share P1 %4.1f%% P3 %4.1f%%   %s" % (_T,_summ(_E)[2],_sh[0],_sh[2],_lab))
+_lo,_hi=0.5,_MT2
+for _ in range(40):
+    _mid=(_lo+_hi)/2; _m=np.stack([EH(s,_p7,_MC,270.0,_MN,_mid) for s in (0,2)]).mean(1); _lo,_hi=(_mid,_hi) if _m[1]>_m[0] else (_lo,_mid)
+print("    exposure without care at which sanation overtakes retention, time to care 270 days: %.2f years" % ((_lo+_hi)/2))
+# Minor incidents outside lambda (added in 1.0.5). Exposed pulp at the Integrated Medical Model incidence of
+# 0.0201 per person-year (NASA/TM-2012-217368), each counted at the loss L_S of a managed incident. Traumatic
+# exposures fall equally on P1 to P3; carious ones are reduced like severe events by r_sel and r_comp. Full dental
+# clearance (P4) has none. A share q of the exposed pulps escalates later to an abscess, a new severe event.
+print("    minor incidents outside lambda, exposed pulp at 0.0201 per person-year, Mars point:")
+_ex=_MN*(1-np.exp(-0.0201*_MT2))
+print("    expected exposed pulps per mission %.3f; added harm at L_S 0.02, 0.05, 0.10: %.4f, %.4f, %.4f" % (
+      _ex,_ex*0.02,_ex*0.05,_ex*0.10))
+_E0=np.stack([EH(s,_p7,_MC,_MT,_MN,_MT2) for s in range(NP)])
+_f1=pF(0,_p7,_MC,_MT); _unit=_f1*crit(_MN)+(1-_f1)*_p7["L_S"]
+_K={"traumatic":lambda s:[1.0,1.0,1.0,0.0][s],"carious":lambda s:[1.0,1-_p7["r_sel"],1-_p7["r_comp"],0.0][s]}
+for _q in (0.0,0.05,0.10,0.20,0.30,0.50):
+    for _nm in ("traumatic","carious"):
+        _E=_E0.copy()
+        for s in range(NP): _E[s]=_E0[s]+_ex*_K[_nm](s)*((1-_q)*_p7["L_S"]+_q*_unit)
+        _sh=np.array([(_E.argmin(0)==s).mean() for s in range(NP)])*100
+        print("    escalating share q=%.2f  %-9s  %s   share P1 %4.1f%% P3 %4.1f%%" % (_q,_nm,_summ(_E)[2],_sh[0],_sh[2]))
+# Residual severe-event hazard after full dental clearance set to zero (added in 1.0.5). Denture problems are
+# minor incidents whose burden sits in the clearance costs; this row shows how much of the harm of P4 rests on
+# lam_pros, the hazard of severe events that remain after clearance.
+_q=dict(_p7); _q["lam_pros"]=np.zeros(100000)
+_E=np.stack([EH(s,_q,_MC,_MT,_MN,_MT2) for s in range(NP)]); _sh=np.array([(_E.argmin(0)==s).mean() for s in range(NP)])*100
+print("    residual hazard after clearance set to zero  %s   share P1 %4.1f%% P3 %4.1f%%" % (_summ(_E)[2],_sh[0],_sh[2]))

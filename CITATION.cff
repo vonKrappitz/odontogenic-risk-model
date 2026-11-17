@@ -7,8 +7,8 @@ abstract: >-
   isolation threshold at which the harm-minimising policy shifts, and reports a
   structural sensitivity analysis over the assumptions that drive the decision.
 type: software
-version: 1.0.4
-date-released: '2026-08-31'
+version: 1.0.5
+date-released: '2026-11-17'
 license: Apache-2.0
 repository-code: https://github.com/vonKrappitz/odontogenic-risk-model
 doi: 10.5281/zenodo.21728788
