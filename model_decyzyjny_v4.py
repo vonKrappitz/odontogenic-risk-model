@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 """
+Version 1.0.6. Relative to 1.0.5 this adds ONE printed block, ADDITIONS IN 1.0.6, at the very end:
+the exposed-pulp table with the optimality share of every policy, the risk reductions applied to the
+event rate instead of the event probability, the risk reductions rank-correlated with their own costs,
+the two risk reductions rank-correlated with each other, and the rescue factor averaged over a transit
+in which the time to care falls linearly to zero. Every line printed by 1.0.5 is unchanged.
 Version 1.0.5. Relative to 1.0.4 this adds ONE printed sub-block, SS7, at the very end:
 the Mars scenario with the event rate fixed at values published by NASA, the rate at
 which sanation overtakes retention, and the result and the value of information under
@@ -35,7 +40,7 @@ EQUATIONS (all explicit):
   P(F|E,P1..P3) = clip(pf0*(1 - c*k_cap)*rescue(t), 0, 1)
   P(F|E,P4)     = clip(pf_pros*rescue(t), 0, 1)
   L(E,F) = 1.0*(1 + 2/n)                       loss on failure, larger in a smaller crew
-  EH(P)  = n*[P(E)*P(F)*L(E,F) + P(E)*(1-P(F))*L_S] + n*Cperson(P) + Cfixed(P)
+  EH(s)  = n*[P(E)*P(F)*L(E,F) + P(E)*(1-P(F))*L_S] + n*Cperson(s) + Cfixed(s)
 
 Running the script prints every number reported in the paper. How often each policy is
 optimal in each scenario, the effect sizes of the effect-size table, the robustness check
@@ -382,3 +387,74 @@ for _q in (0.0,0.05,0.10,0.20,0.30,0.50):
 _q=dict(_p7); _q["lam_pros"]=np.zeros(100000)
 _E=np.stack([EH(s,_q,_MC,_MT,_MN,_MT2) for s in range(NP)]); _sh=np.array([(_E.argmin(0)==s).mean() for s in range(NP)])*100
 print("    residual hazard after clearance set to zero  %s   share P1 %4.1f%% P3 %4.1f%%" % (_summ(_E)[2],_sh[0],_sh[2]))
+
+# ======================================================================
+# ADDITIONS IN 1.0.6. Everything above is unchanged and prints as in 1.0.5.
+# Scenario unless stated: Mars, c=0.2, t=400 d, n=6, T=2.6 yr, the draws of SS7 (seed 0).
+# ======================================================================
+print("\n" + "="*70 + "\nADDITIONS IN 1.0.6\n" + "="*70)
+
+# (a) Exposed pulps with a share q escalating to an abscess (Table S3): the optimality share of all four
+# policies. Same draws and same harm as the escalation lines of SS7 above, which print P1 and P3 only.
+print("\n--- exposed pulps, escalating share q, optimality share of every policy (Table S3) ---")
+for _q in (0.0,0.05,0.10,0.20,0.30,0.50):
+    for _nm in ("traumatic","carious"):
+        _E=_E0.copy()
+        for s in range(NP): _E[s]=_E0[s]+_ex*_K[_nm](s)*((1-_q)*_p7["L_S"]+_q*_unit)
+        _sh=np.array([(_E.argmin(0)==s).mean() for s in range(NP)])*100
+        print("    q=%.2f  %-9s  share P1 %4.1f%%  P2 %4.1f%%  P3 %4.1f%%  P4 %4.1f%%" % (_q,_nm,_sh[0],_sh[1],_sh[2],_sh[3]))
+
+# (b) Risk reductions applied to the event rate instead of the event probability:
+# P(E|P2) = 1 - exp(-lambda*(1-r_sel)*T), P(E|P3) = 1 - exp(-lambda*(1-r_comp)*T). P1 and P4 as in the base model.
+def _pE_rate(s,p,T):
+    l=p["lambda_yr"]
+    return [1-np.exp(-l*T),1-np.exp(-l*(1-p["r_sel"])*T),1-np.exp(-l*(1-p["r_comp"])*T),1-np.exp(-p["lam_pros"]*T)][s]
+def _EH_rate(s,p,c,t,n,T):
+    e=_pE_rate(s,p,T); f=pF(s,p,c,t)
+    return n*(e*f*crit(n)+e*(1-f)*p["L_S"])+n*Cp(s,p)+Cf(s,p)
+print("\n--- risk reductions on the event rate instead of the event probability ---")
+_E=np.stack([_EH_rate(s,_p7,_MC,_MT,_MN,_MT2) for s in range(NP)]); _m,_sh,_txt=_summ(_E)
+print("    reduction on the rate  %s   share P1 %4.1f%% P2 %4.1f%% P3 %4.1f%%" % (_txt,_sh[0],_sh[1],_sh[2]))
+
+# (c), (d) Rank correlation. Each value drawn above is kept and only the pairing changes, by an Iman-Conover-style
+# reordering of one variable with normal scores, so every marginal distribution stays exactly as drawn.
+# The target is a rank (Spearman) correlation, converted to the normal-score correlation 2*sin(pi*rho/6)
+# that produces it.
+# (c) Mean harm cannot change by construction: each cost is added to the harm of its own policy.
+# (d) Only the mean of P3 can move, and only by Monte Carlo noise: r_comp multiplies the event probability under
+# retention, P(E|P1), and the result is weighted by the failure probability and the losses of the same draw,
+# so reordering r_comp changes its pairing with lambda and with all of these. The script prints that shift.
+def _rank(x): return np.argsort(np.argsort(x))
+def _nsc(rho): return 2*np.sin(np.pi*rho/6)   # normal-score correlation giving rank correlation rho
+def _reorder(x,y,rho,rng):
+    """Permute y so that its ranks follow normal scores correlated at rho with the ranks of x."""
+    N=len(x); z1=np.empty(N); z1[np.argsort(x)]=np.sort(rng.standard_normal(N))
+    z2=rho*z1+np.sqrt(1-rho**2)*rng.standard_normal(N)
+    out=np.empty(N); out[np.argsort(z2)]=np.sort(y); return out
+def _spearman(x,y): return np.corrcoef(_rank(x),_rank(y))[0,1]
+_Eb=np.stack([EH(s,_p7,_MC,_MT,_MN,_MT2) for s in range(NP)]); _mb=_Eb.mean(1)
+def _corr_line(label,q,pairs):
+    _E=np.stack([EH(s,q,_MC,_MT,_MN,_MT2) for s in range(NP)]); _m,_sh,_txt=_summ(_E)
+    rs=" ".join("rank r(%s,%s) %+.2f" % (a,b,_spearman(q[a],q[b])) for a,b in pairs)
+    print("    %-10s %s   share P1 %4.1f%% P2 %4.1f%% P3 %4.1f%%   max |mean - base| %.1e   %s"
+          % (label,_txt,_sh[0],_sh[1],_sh[2],np.abs(_m-_mb).max(),rs))
+# Efficacy and cost rank-correlated within each policy, in both directions. A positive correlation fits a more
+# extensive intervention that removes more risk and costs more. A negative one fits operator skill, which
+# removes more risk at a lower cost.
+print("\n--- each risk reduction rank-correlated with its own cost (r_sel with Cp_P2, r_comp with Cp_P3) ---")
+for _rho in (-0.9,-0.5,0.5,0.9):
+    _rng=np.random.default_rng(106); _q=dict(_p7)
+    _q["Cp_P2"]=_reorder(_q["r_sel"],_q["Cp_P2"],_nsc(_rho),_rng); _q["Cp_P3"]=_reorder(_q["r_comp"],_q["Cp_P3"],_nsc(_rho),_rng)
+    _corr_line("rank %+.1f" % _rho,_q,[("r_sel","Cp_P2"),("r_comp","Cp_P3")])
+print("\n--- the two risk reductions rank-correlated with each other (r_sel with r_comp) ---")
+for _rho in (0.5,0.9,-0.5):
+    _rng=np.random.default_rng(107); _q=dict(_p7)
+    _q["r_comp"]=_reorder(_q["r_sel"],_q["r_comp"],_nsc(_rho),_rng)
+    _corr_line("rank %+.1f" % _rho,_q,[("r_sel","r_comp")])
+
+# (e) Rescue factor t/(t+tau) averaged over a transit in which the time to definitive care falls linearly
+# from the full mission to zero: (1/T) * integral_0^T u/(u+tau) du = 1 - (tau/T)*ln(1+T/tau), T in days.
+print("\n--- rescue factor averaged over a transit, time to care falling linearly to zero, T=2.6 yr ---")
+_Td=_MT2*365.25
+for _tau in (7,30,90):
+    print("    tau=%2d d  averaged %.3f   fixed t=400 d %.3f" % (_tau,1-(_tau/_Td)*np.log(1+_Td/_tau),400/(400+_tau)))

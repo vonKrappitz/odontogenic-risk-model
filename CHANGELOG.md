@@ -4,6 +4,85 @@ All notable changes to this repository. The base model, its equations and its
 parameter ranges have not changed since 1.0.2, so every number printed by 1.0.2
 is reproduced line for line by every later version.
 
+## 1.0.6
+
+One printed block added to the model, the sign of the colour scale in Fig. 2
+corrected and the bars of Fig. S2 updated. The 200 lines printed by 1.0.5 are
+reproduced byte for byte, under Python 3.13.18 with numpy 2.5.3 and under Python
+3.12.3 with numpy 2.4.4, and the 37 new lines follow them. Figs. 1, 3 and S1 are
+unchanged pixel for pixel.
+
+### Added
+
+- ADDITIONS IN 1.0.6, printed at the very end of the model. All of it uses the
+  Mars scenario and the draws of SS7.
+- Exposed pulps with a share escalating to an abscess (Table S3): the optimality
+  share of all four policies. The lines of SS7 print P1 and P3 only.
+- The risk reductions of selective extraction and sanation applied to the event
+  rate, 1 - exp(-lambda*(1 - r)*T), instead of to the event probability.
+- Each risk reduction rank-correlated with its own cost, r_sel with Cp_P2 and
+  r_comp with Cp_P3, at rank correlations -0.9, -0.5, 0.5 and 0.9. A positive
+  correlation fits a more extensive intervention that removes more risk and costs
+  more. A negative one fits operator skill, which removes more risk at a lower
+  cost.
+- The two risk reductions rank-correlated with each other, r_sel with r_comp, at
+  0.5, 0.9 and -0.5.
+- The rescue factor t/(t + tau) averaged over a transit in which the time to
+  definitive care falls linearly to zero, 1 - (tau/T)*ln(1 + T/tau), for tau of
+  7, 30 and 90 days, against the fixed time to care of 400 days.
+
+### Method of the rank correlations
+
+- Each value drawn in SS7 is kept and only the pairing of draws changes, by an
+  Iman-Conover-style reordering of one variable with normal scores. Every
+  marginal distribution therefore stays exactly as drawn.
+- The target is a rank (Spearman) correlation, converted to the normal-score
+  correlation 2*sin(pi*rho/6) that produces it. The script prints the rank
+  correlation achieved.
+- With each reduction correlated with its own cost, no mean harm can change,
+  because each cost is added to the harm of its own policy. The script prints the
+  largest change in mean harm against the base model, which is zero.
+- With the two reductions correlated with each other, the mean of sanation (P3)
+  can move by Monte Carlo noise only. r_comp multiplies the event probability
+  under retention, P(E|P1), and the result is weighted by the failure probability
+  and the losses of the same draw, so reordering r_comp changes its pairing with
+  the event rate and with all of these. The printed shift is below 0.0001, under
+  a quarter of the Monte Carlo standard error of that mean.
+
+### Changed
+
+- The docstring writes the expected-harm equation as EH(s), s being the policy,
+  instead of EH(P).
+
+### Fixed
+
+- Fig. 2 (margin map): the colour bar was labelled "Sanation minus retention" while
+  the map showed retention minus sanation. The margin is now computed as sanation
+  minus retention, the sign of P3 minus P1 in Table 4 of the paper, so that
+  negative values favour sanation. The colours of the map are unchanged: red where
+  sanation has the lower mean harm, blue where retention has. The colour bar now
+  runs from red, negative, at the bottom to blue, positive, at the top. The thin
+  contours are still drawn on retention minus sanation, so that the lines
+  themselves are exactly those of 1.0.5 and dashed lines still mark the retention
+  side, now with positive labels. Each label prints the value with the corrected
+  sign. Because the minus sign changes their width, the labels move along their
+  lines, by up to about an eighth of the axis height. The label of the -0.05 line
+  is now placed by hand to the right of the Mars point, and all other labels are
+  placed automatically. The region label "Sanation favoured" moved left, from 0.72
+  to 0.62 of the axis width. No contour label touches a region label or the Mars
+  marker. The colour field
+  differs from 1.0.5 in 848 pixels by at most 2 of 255 levels, from rounding in
+  the colour map. The contour labels now use a true minus sign, as the colour bar
+  does, instead of a hyphen.
+- Fig. 3 (optimum transition): the script ends by printing "Fig 3 zapisana z v4"
+  instead of "Fig 5", the figure's number before the paper was restructured. The
+  figure itself is unchanged.
+- Fig. S2 (truncated ruler): the bars now show the longest flights on the
+  International Space Station (374 days, 1.02 years) and on Mir (437 days,
+  1.2 years), and a Mars mission of 2.6 years, the duration used in the model.
+  Before, a bar labelled ISS showed 1.2 years, which is the Mir record, the Mars
+  bar showed 2.7 years, and a bar for short lunar missions was drawn.
+
 ## 1.0.5
 
 One printed sub-block added to the model and the layout of the five figures

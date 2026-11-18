@@ -14,9 +14,10 @@ number and figure in the paper from scratch.
 
 **Archived on Zenodo:** https://doi.org/10.5281/zenodo.21728788
 
-Version 1.0.5 is the release accompanying the manuscript. Relative to 1.0.4 it
-adds one printed sub-block, SS7, and fixes the layout of the five figures. Every
-line printed by 1.0.4 is unchanged.
+Version 1.0.6 is the release accompanying the manuscript. Relative to 1.0.5 it
+adds one printed block, ADDITIONS IN 1.0.6, corrects the sign of the colour scale
+in Fig. 2 and updates the bars of Fig. S2. Every line printed by the model in
+1.0.5 is unchanged.
 
 This is the concept DOI. It always resolves to the latest archived release, so it
 does not need updating when a new version is deposited. Zenodo lists the DOI of
@@ -37,7 +38,7 @@ Onboard capability `c` is a scenario parameter (0 to 1), not a competing policy.
 
 | File (Polish) | Literal meaning | What it is / produces |
 |---|---|---|
-| `model_decyzyjny_v4.py` | "decision model, v4" | **The model.** Run it to print all reported numbers: scenario optimality shares, Table 3 effect sizes, seed stability, the extreme-corner analysis, the log-uniform robustness check, the tau sensitivity, the EVPPI values, and the structural-sensitivity block (regret intervals, harm-scale weights, Weibull hazard, prosthetic multiplier, correlated crew events, provisional acceptability term). Writes no figures. |
+| `model_decyzyjny_v4.py` | "decision model, v4" | **The model.** Run it to print all reported numbers: scenario optimality shares, Table 3 effect sizes, seed stability, the extreme-corner analysis, the log-uniform robustness check, the tau sensitivity, the EVPPI values, and the structural-sensitivity block (regret intervals, harm-scale weights, Weibull hazard, prosthetic multiplier, correlated crew events, provisional acceptability term), and at the end the additions of 1.0.6 (shares of all four policies for Table S3, reductions on the event rate, rank correlations, averaged rescue factor). Writes no figures. |
 | `ryzyko_populacyjne.py` | "population risk" | **Fig. S1** (supplement) — population risk `P(n) = 1 - (1 - p)^n` |
 | `figura_urwana_miarka.py` | "truncated ruler figure" | **Fig. S2** (supplement) — mission duration vs the caries-development window |
 | `figura_drzewo_decyzyjne.py` | "decision tree figure" | **Fig. 1** — decision structure of policies P1-P4 |

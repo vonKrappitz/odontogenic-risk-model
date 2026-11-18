@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Figure S2 (supplementary material). The truncated ruler, mission duration against the window in which caries develops.
-Shows that an ISS increment ends before the window opens, while a Mars mission enters it.
+Shows that the longest flights on the ISS (374 days) and on Mir (437 days) end before the window opens,
+while a Mars mission of 2.6 years, the duration used in the model, enters it. Since 1.0.6.
 Writes figura_urwana_miarka.png and .pdf.
 """
 import matplotlib
@@ -25,7 +26,7 @@ def rysuj():
             ha="center", va="bottom", fontsize=8.5, color="0.25")
 
     # mission duration bars
-    misje = [("ISS", 1.2, "0.55"), ("Moon\nshort missions", 0.4, "0.4"), ("Mars", 2.7, "0.25")]
+    misje = [("ISS record", 1.02, "0.55"), ("Mir record", 1.2, "0.4"), ("Mars mission", 2.6, "0.25")]
     y = [0, 1, 2]
     for (nazwa, dlug, kolor), yy in zip(misje, y):
         ax.barh(yy, dlug, height=0.5, color=kolor, edgecolor="black", zorder=3)
@@ -53,5 +54,5 @@ def rysuj():
 if __name__ == "__main__":
     rysuj()
     print("Zapisano figure urwanej miarki.")
-    print("Kontrola. ISS konczy sie na 1.2, okno prochnicy zaczyna od 2, wiec ISS nie dociera do okna.")
-    print("Mars konczy sie na 2.7, wchodzi w okno 2 do 6, a strzalka przesuwa je w lewo.")
+    print("Kontrola. Rekord ISS 1.02 (374 dni) i rekord Mir 1.2 (437 dni) koncza sie przed oknem prochnicy od 2 lat.")
+    print("Mars konczy sie na 2.6, wchodzi w okno 2 do 6, a strzalka przesuwa je w lewo.")
